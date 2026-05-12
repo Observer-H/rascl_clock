@@ -1,0 +1,8 @@
+int32[] hours
+float64 dwell_time
+---
+bool success
+string message
+---
+int32 current_hour
+int32 current_index

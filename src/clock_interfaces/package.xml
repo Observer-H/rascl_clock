@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>clock_interfaces</name>
+  <version>0.0.1</version>
+  <description>Interfaces for the motor clock demo.</description>
+  <maintainer email="student@example.com">student</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <build_depend>rosidl_default_generators</build_depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  <member_of_group>rosidl_interface_packages</member_of_group>
+</package>
