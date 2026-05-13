@@ -11,6 +11,8 @@ from clock_interfaces.srv import MoveToHour
 class SequenceActionServer(Node):
     def __init__(self):
         super().__init__("sequence_action_server")
+        # 中文：Action 节点不直接碰电机，只通过 service 请求 motor_node 移动。
+        # English: The action node does not touch hardware; it asks motor_node via service.
         self.client = self.create_client(MoveToHour, "move_to_hour")
         self.server = ActionServer(
             self,
@@ -29,17 +31,23 @@ class SequenceActionServer(Node):
             return result
 
         for index, hour in enumerate(goal_handle.request.hours):
+            # 中文：允许用户取消正在执行的 sequence。
+            # English: Allow the user to cancel a running sequence.
             if goal_handle.is_cancel_requested:
                 result.success = False
                 result.message = "Canceled"
                 goal_handle.canceled()
                 return result
 
+            # 中文：反馈当前执行到第几个钟点。
+            # English: Report which hour mark is being executed.
             feedback = ClockSequence.Feedback()
             feedback.current_hour = int(hour)
             feedback.current_index = index
             goal_handle.publish_feedback(feedback)
 
+            # 中文：每一步 sequence 都转成一次 /move_to_hour service 请求。
+            # English: Each sequence step becomes one /move_to_hour service request.
             request = MoveToHour.Request()
             request.hour = int(hour)
             future = self.client.call_async(request)
