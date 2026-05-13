@@ -81,12 +81,47 @@ class MotorDriver:
         self.master.config_map()
         self.master.state = pysoem.OP_STATE
         self.master.write_state()
-        reached = self.master.state_check(pysoem.OP_STATE, 5_000_000)
+        reached = self._wait_ethercat_state(pysoem.OP_STATE, timeout=5.0)
         if reached != pysoem.OP_STATE:
-            raise RuntimeError("EtherCAT slave did not reach OP state")
+            raise RuntimeError(self._ethercat_state_error("EtherCAT slave did not reach OP state"))
 
         self.slave = self.master.slaves[self.slave_index]
         self._enable_operation()
+
+    def _wait_ethercat_state(self, target_state, timeout):
+        """Wait for EtherCAT state while exchanging process data.
+
+        中文：很多从站进入 OP 前需要主站持续发送/接收过程数据。
+        English: Many slaves need cyclic process data exchange before entering OP.
+        """
+        deadline = time.monotonic() + timeout
+        reached = None
+        while time.monotonic() < deadline:
+            self.master.send_processdata()
+            self.master.receive_processdata(10_000)
+            reached = self.master.state_check(target_state, 50_000)
+            if reached == target_state:
+                return reached
+            time.sleep(0.01)
+        self.master.read_state()
+        return reached
+
+    def _ethercat_state_error(self, message):
+        """Build a diagnostic EtherCAT error message.
+
+        中文：失败时输出从站状态和 AL status，方便实验室排错。
+        English: Include slave state and AL status to make lab debugging easier.
+        """
+        details = []
+        for index, slave in enumerate(self.master.slaves):
+            state = getattr(slave, "state", "unknown")
+            al_status = getattr(slave, "al_status", "unknown")
+            al_code = getattr(slave, "al_status_code", "unknown")
+            name = getattr(slave, "name", "unknown")
+            details.append(
+                f"slave {index} {name}: state={state}, al_status={al_status}, al_status_code={al_code}"
+            )
+        return f"{message}. " + "; ".join(details)
 
     def home(self):
         """Run CiA402 homing and set logical zero.
