@@ -1,0 +1,8 @@
+<library path="clock_hardware">
+  <class
+    name="clock_hardware/ClockHardware"
+    type="clock_hardware::ClockHardware"
+    base_class_type="hardware_interface::SystemInterface">
+    <description>ros2_control SystemInterface for the motor clock.</description>
+  </class>
+</library>

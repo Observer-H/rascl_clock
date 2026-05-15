@@ -20,8 +20,13 @@ source install/setup.bash
 ## Run
 
 ```bash
-ros2 launch clock_motor clock.launch.py
+ros2 launch clock_description clock_ros2_control.launch.py
 ```
+
+This starts the Python EtherCAT backend, `controller_manager`, the
+`clock_hardware/ClockHardware` ros2_control hardware interface,
+`joint_state_broadcaster`, `forward_command_controller`, and the sequence action
+server.
 
 ## Test single movement
 
@@ -34,6 +39,16 @@ ros2 service call /move_to_hour clock_interfaces/srv/MoveToHour "{hour: 9}"
 ```bash
 ros2 action send_goal /clock_sequence clock_interfaces/action/ClockSequence "{hours: [3, 6, 12, 9, 3], dwell_time: 1.0}" --feedback
 ```
+
+The sequence action publishes position commands to:
+
+```text
+/clock_controller/commands
+```
+
+Those commands pass through `forward_command_controller`, then into the
+ros2_control hardware interface, and finally to the existing Python motor
+backend through `/move_to_counts`.
 
 ## Where to paste your existing motor code
 

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>clock_description</name>
+  <version>0.0.1</version>
+  <description>Description and ros2_control launch files for the motor clock.</description>
+  <maintainer email="group13@example.com">group13</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>clock_hardware</exec_depend>
+  <exec_depend>clock_motor</exec_depend>
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>controller_manager</exec_depend>
+  <exec_depend>forward_command_controller</exec_depend>
+  <exec_depend>joint_state_broadcaster</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>ros2_control</exec_depend>
+  <exec_depend>ros2_controllers</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

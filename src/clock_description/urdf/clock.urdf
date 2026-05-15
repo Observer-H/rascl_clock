@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<robot name="motor_clock">
+  <link name="base_link"/>
+  <link name="clock_hand"/>
+
+  <joint name="clock_hand_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="clock_hand"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <ros2_control name="ClockSystem" type="system">
+    <hardware>
+      <plugin>clock_hardware/ClockHardware</plugin>
+      <param name="counts_per_rev">1323008</param>
+      <param name="move_service">/move_to_counts</param>
+    </hardware>
+    <joint name="clock_hand_joint">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+</robot>

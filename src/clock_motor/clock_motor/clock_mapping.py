@@ -1,6 +1,7 @@
 COUNTS_PER_90_DEG = 330752
 COUNTS_PER_REV = COUNTS_PER_90_DEG * 4
 COUNTS_PER_HOUR = COUNTS_PER_REV / 12.0
+RADIANS_PER_HOUR = 2.0 * 3.141592653589793 / 12.0
 
 # 中文：homing 后的逻辑 0 对应表盘 6 点。
 # English: Logical zero after homing corresponds to clock 6.
@@ -22,6 +23,17 @@ def hour_to_counts(hour: int) -> int:
     hour = normalize_hour(hour)
     steps = (hour - ZERO_HOUR) % 12
     return round(steps * COUNTS_PER_HOUR)
+
+
+def hour_to_radians(hour: int) -> float:
+    """Convert clock hour to ros2_control position command in radians.
+
+    中文：forward_command_controller 使用 position interface，所以这里发布弧度。
+    English: The forward_command_controller uses a position interface, so publish radians.
+    """
+    hour = normalize_hour(hour)
+    steps = (hour - ZERO_HOUR) % 12
+    return steps * RADIANS_PER_HOUR
 
 
 def nearest_equivalent_target(current_counts: int, target_counts: int) -> int:

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>clock_hardware</name>
+  <version>0.0.1</version>
+  <description>ros2_control hardware interface for the motor clock.</description>
+  <maintainer email="group13@example.com">group13</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>clock_interfaces</depend>
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_lifecycle</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
